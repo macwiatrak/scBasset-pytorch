@@ -1,20 +1,21 @@
 import torch
 import torch.nn as nn
 
-from scBasset.layers import ConvLayer, _round, DenseLayer
+from scbasset.layers import ConvLayer, DenseLayer
+from scbasset.utils import _round
 
 
 class scBasset(nn.Module):
     def __init__(
-            self,
-            n_cells: int,
-            n_filters_init: int = 288,
-            n_repeat_blocks_tower: int = 6,
-            filters_mult: float = 1.122,
-            n_filters_pre_bottleneck: int = 256,
-            n_bottleneck_layer: int = 32,
-            batch_norm: bool = True,
-            dropout: float = 0.,
+        self,
+        n_cells: int,
+        n_filters_init: int = 288,
+        n_repeat_blocks_tower: int = 6,
+        filters_mult: float = 1.122,
+        n_filters_pre_bottleneck: int = 256,
+        n_bottleneck_layer: int = 32,
+        batch_norm: bool = True,
+        dropout: float = 0.0,
     ):
         super().__init__()
 
@@ -61,7 +62,12 @@ class scBasset(nn.Module):
         )
         self.final = nn.Linear(n_bottleneck_layer, n_cells)
 
-    def forward(self, x: torch.Tensor):
+    def forward(
+        self,
+        x: torch.Tensor,  # input shape: (batch_size, 4, seq_length)
+    ):
+        # TODO: add random shift to act as a regularizer on the dataset level
+        # TODO: add use reverse complement randomly on the dataset level
         x = self.stem(x)
         x = self.tower(x)
         x = self.pre_bottleneck(x)

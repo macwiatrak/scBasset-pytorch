@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    name="scBasset",
+    name="scbasset",
     packages=find_packages(),
     package_data={
         "scBasset": ["py.typed", "**/*.json", "**/*.yaml"],
