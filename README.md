@@ -1,2 +1,2 @@
-# scBasset-pytorch
-An implementation of scBasset model in PyTorch.
+# DeepBac
+Repository for a DeepBac model predicting phenotype and gene regulation activity based on bacterial DNA variation.
