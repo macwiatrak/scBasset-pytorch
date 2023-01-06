@@ -1,2 +1,3 @@
-# DeepBac
-Repository for a DeepBac model predicting phenotype and gene regulation activity based on bacterial DNA variation.
+# scBasset-pytorch
+
+A pytorch implementation of scBasset: a deep learning model for predicting transcription factor binding sites from single-cell ATAC-seq data (Yuan and Kelley, 2022).

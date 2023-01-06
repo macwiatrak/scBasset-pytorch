@@ -6,6 +6,23 @@ from scbasset.utils import _round
 
 
 class scBasset(nn.Module):
+    """
+    PytTorch implementation of scBasset model (Yuan and Kelley, 2022)
+    Article link: https://www.nature.com/articles/s41592-022-01562-8
+    Original implementation in Keras: https://github.com/calico/scBasset
+
+    Args:
+        n_cells: number of cells to predict region accessibility
+        n_filters_init: nr of filters for the initial conv layer
+        n_repeat_blocks_tower: nr of layers in the convolutional tower
+        filters_mult: proportion by which the nr of filters should inrease in the
+            convolutional tower
+        n_bottleneck_layer: size of the bottleneck layer
+        batch_norm: whether to apply batch norm across model layers
+        dropout: dropout rate across layers, by default we don't do it for
+            convolutional layers but we do it for the dense layers
+    """
+
     def __init__(
         self,
         n_cells: int,
@@ -56,7 +73,7 @@ class scBasset(nn.Module):
             in_features=n_filters_pre_bottleneck * 7,
             out_features=n_bottleneck_layer,
             use_bias=True,
-            batch_norm=False,
+            batch_norm=True,
             dropout=0.2,
             activation_fn=nn.Identity(),
         )
