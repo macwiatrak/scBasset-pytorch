@@ -10,7 +10,7 @@ class scBasset(nn.Module):
         self,
         n_cells: int,
         n_filters_init: int = 288,
-        n_repeat_blocks_tower: int = 6,
+        n_repeat_blocks_tower: int = 5,
         filters_mult: float = 1.122,
         n_filters_pre_bottleneck: int = 256,
         n_bottleneck_layer: int = 32,
