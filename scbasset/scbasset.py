@@ -1,8 +1,25 @@
+import math
+from typing import List
+
 import torch
 import torch.nn as nn
 
 from scbasset.layers import ConvLayer, DenseLayer
 from scbasset.utils import _round
+
+
+def _col_round(x):
+    frac = x - math.floor(x)
+    if frac <= 0.5:
+        return math.floor(x)
+    return math.ceil(x)
+
+
+def _get_filter_dim(seq_length: int, pooling_sizes: List[int]):
+    filter_dim = seq_length
+    for ps in pooling_sizes:
+        filter_dim = _col_round(filter_dim / ps)
+    return filter_dim
 
 
 class scBasset(nn.Module):
@@ -33,6 +50,7 @@ class scBasset(nn.Module):
         n_bottleneck_layer: int = 32,
         batch_norm: bool = True,
         dropout: float = 0.0,
+        genomic_seq_length: int = 1344,
     ):
         super().__init__()
 
@@ -67,10 +85,17 @@ class scBasset(nn.Module):
             kernel_size=1,
             dropout=dropout,
             batch_norm=batch_norm,
-            pool_size=2,
+            pool_size=1,
+        )
+
+        # get pooling sizes of the upstream conv layers
+        pooling_sizes = [3] + [2] * n_repeat_blocks_tower + [1]
+        # get filter dimensionality to account for variable sequence length
+        filter_dim = _get_filter_dim(
+            seq_length=genomic_seq_length, pooling_sizes=pooling_sizes
         )
         self.bottleneck = DenseLayer(
-            in_features=n_filters_pre_bottleneck * 7,
+            in_features=n_filters_pre_bottleneck * filter_dim,
             out_features=n_bottleneck_layer,
             use_bias=True,
             batch_norm=True,
